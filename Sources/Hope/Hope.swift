@@ -1,5 +1,6 @@
 @_exported import XCTest
 @_exported import Peek
+@_exported import TrySwitch
 
 infix operator ± : RangeFormationPrecedence
 
