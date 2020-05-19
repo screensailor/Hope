@@ -7,11 +7,7 @@ let package = Package(
     products: [
         .library(name: "Hope", targets: ["Hope"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/screensailor/TrySwitch.git", .branch("master")),
-        .package(url: "https://github.com/screensailor/Peek.git", .branch("master")),
-    ],
     targets: [
-        .target(name: "Hope", dependencies: ["Peek", "TrySwitch"]),
+        .target(name: "Hope"),
     ]
 )
