@@ -1,2 +1,2 @@
 # Hope
-XCText operator extensions.
+Giving XCTest some hope.
