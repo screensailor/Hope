@@ -8,7 +8,7 @@ extension hope {
     
     public init(
         _ value: @escaping @autoclosure () throws -> T,
-        file: StaticString = #file,
+        file: StaticString = #filePath,
         line: UInt = #line
     ) {
         self.value = value
@@ -21,7 +21,7 @@ extension hope where T == Bool {
     
     public static func `true`(
         _ value: @escaping @autoclosure () throws -> Bool,
-        file: StaticString = #file,
+        file: StaticString = #filePath,
         line: UInt = #line
     ) rethrows {
         Self(value: value, file: file, line: line) == true
@@ -29,10 +29,18 @@ extension hope where T == Bool {
     
     public static func `false`(
         _ value: @escaping @autoclosure () throws -> Bool,
-        file: StaticString = #file,
+        file: StaticString = #filePath,
         line: UInt = #line
     ) rethrows {
         Self(value: value, file: file, line: line) == false
+    }
+    
+    public static func `throws`<Ignore>(
+        _ value: @escaping @autoclosure () throws -> Ignore,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        XCTAssertThrowsError(value, file: file, line: line)
     }
 }
 
