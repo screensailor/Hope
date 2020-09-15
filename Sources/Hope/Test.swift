@@ -24,7 +24,7 @@ extension hope where T == Bool {
         file: StaticString = #filePath,
         line: UInt = #line
     ) rethrows {
-        Self(value: value, file: file, line: line) == true
+        XCTAssertTrue(try value(), file: file, line: line)
     }
     
     public static func `false`(
@@ -32,7 +32,7 @@ extension hope where T == Bool {
         file: StaticString = #filePath,
         line: UInt = #line
     ) rethrows {
-        Self(value: value, file: file, line: line) == false
+        XCTAssertFalse(try value(), file: file, line: line)
     }
     
     public static func `throws`<Ignore>(
@@ -40,7 +40,7 @@ extension hope where T == Bool {
         file: StaticString = #filePath,
         line: UInt = #line
     ) {
-        XCTAssertThrowsError(value, file: file, line: line)
+        XCTAssertThrowsError(try value(), file: file, line: line)
     }
 }
 
