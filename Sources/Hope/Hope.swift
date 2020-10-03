@@ -4,6 +4,31 @@ infix operator ± : RangeFormationPrecedence
 
 public typealias Hopes = XCTestCase
 
+extension Hopes {
+    
+    public func expectation(function: String = #function) -> XCTestExpectation {
+        expectation(description: function)
+    }
+    
+    @inlinable public func wait(
+        for first: XCTestExpectation,
+        _ rest: XCTestExpectation...,
+        timeout seconds: TimeInterval
+    ) {
+        wait(for: [first] + rest, timeout: seconds)
+    }
+}
+
+extension Optional {
+    
+    public func hopefully(
+        _ file: StaticString = #filePath,
+        _ line: UInt = #line
+    ) throws -> Wrapped {
+        try XCTUnwrap(self, file: file, line: line)
+    }
+}
+
 /// TODO: create own ``XCTIssue``s
 public struct hope<T> {
     public let value: () throws -> T
@@ -24,18 +49,12 @@ extension hope {
     }
 }
 
-extension Optional {
-    
-    public func hopefully(
-        _ file: StaticString = #filePath,
-        _ line: UInt = #line
-    ) throws -> Wrapped {
-        try XCTUnwrap(self, file: file, line: line)
-    }
-}
-
 extension hope where T == Bool {
     
+    public static func `for`(_ seconds: TimeInterval) {
+        _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: seconds)
+    }
+
     public static func `true`(
         _ value: @escaping @autoclosure () throws -> Bool,
         _ file: StaticString = #filePath,
@@ -65,7 +84,7 @@ extension hope where T == Bool {
         _ file: StaticString = #filePath,
         _ line: UInt = #line
     ) {
-        XCTFail(message())
+        XCTFail(message(), file: file, line: line)
     }
 }
 
