@@ -47,6 +47,14 @@ extension hope {
         self.file = file
         self.line = line
     }
+    
+    public init<E: Error>(
+        _ value: @escaping @autoclosure () throws -> Result<T, E>,
+        _ file: StaticString = #filePath,
+        _ line: UInt = #line
+    ) {
+        self.init(try value().get(), file, line)
+    }
 }
 
 extension hope where T == Bool {
