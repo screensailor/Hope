@@ -95,6 +95,14 @@ extension hope where T == Bool {
     ) {
         XCTFail(message(), file: file, line: line)
     }
+    
+    public static func less(
+        _ error: @autoclosure () -> Error,
+        _ file: StaticString = #filePath,
+        _ line: UInt = #line
+    ) {
+        XCTFail(String(describing: error()), file: file, line: line)
+    }
 }
 
 extension hope where T: Equatable {
