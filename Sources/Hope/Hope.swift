@@ -49,11 +49,12 @@ extension hope {
     }
     
     public init<E: Error>(
-        _ value: @escaping @autoclosure () throws -> Result<T, E>,
+        _ value: @autoclosure () -> Result<T, E>,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
     ) {
-        self.init(try value().get(), file, line)
+        let result = Result{ try value().get() }
+        self.init(try result.get(), file, line)
     }
 }
 
@@ -64,7 +65,7 @@ extension hope where T == Bool {
     }
 
     public static func `true`(
-        _ value: @escaping @autoclosure () throws -> Bool,
+        _ value: @autoclosure () throws -> Bool,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
     ) rethrows {
@@ -72,7 +73,7 @@ extension hope where T == Bool {
     }
     
     public static func `false`(
-        _ value: @escaping @autoclosure () throws -> Bool,
+        _ value: @autoclosure () throws -> Bool,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
     ) rethrows {
@@ -80,7 +81,7 @@ extension hope where T == Bool {
     }
     
     public static func `throws`<Ignore>(
-        _ value: @escaping @autoclosure () throws -> Ignore,
+        _ value: @autoclosure () throws -> Ignore,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
     ) {
@@ -88,7 +89,7 @@ extension hope where T == Bool {
     }
     
     public static func less(
-        _ message: @escaping @autoclosure () -> String,
+        _ message: @autoclosure () -> String,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
     ) {
