@@ -48,12 +48,31 @@ extension hope {
         self.line = line
     }
     
+    public init(
+        that value: T,
+        _ file: StaticString = #filePath,
+        _ line: UInt = #line
+    ) {
+        self.value = { value }
+        self.file = file
+        self.line = line
+    }
+
     public init<E: Error>(
         _ value: @autoclosure () -> Result<T, E>,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
     ) {
         let result = Result{ try value().get() }
+        self.init(try result.get(), file, line)
+    }
+
+    public init<E: Error>(
+        that value: Result<T, E>,
+        _ file: StaticString = #filePath,
+        _ line: UInt = #line
+    ) {
+        let result = Result{ try value.get() }
         self.init(try result.get(), file, line)
     }
 }
