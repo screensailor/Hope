@@ -77,6 +77,25 @@ extension hope {
     }
 }
 
+extension hope where T == Any {
+    
+    public static func `none`<T>(
+        _ value: @autoclosure () throws -> T?,
+        _ file: StaticString = #filePath,
+        _ line: UInt = #line
+    ) rethrows {
+        XCTAssertNil(try value())
+    }
+    
+    public static func `some`<T>(
+        _ value: @autoclosure () throws -> T?,
+        _ file: StaticString = #filePath,
+        _ line: UInt = #line
+    ) rethrows {
+        XCTAssertNotNil(try value())
+    }
+}
+
 extension hope where T == Bool {
     
     public static func `for`(_ seconds: TimeInterval) {
