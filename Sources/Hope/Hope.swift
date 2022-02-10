@@ -4,13 +4,13 @@ infix operator ± : RangeFormationPrecedence
 
 public typealias Hopes = XCTestCase
 
-extension Hopes {
+public extension Hopes {
     
-    public func expectation(function: String = #function) -> XCTestExpectation {
+    func expectation(function: String = #function) -> XCTestExpectation {
         expectation(description: function)
     }
     
-    @inlinable public func wait(
+    @inlinable func wait(
         for first: XCTestExpectation,
         _ rest: XCTestExpectation...,
         timeout seconds: TimeInterval
@@ -19,9 +19,9 @@ extension Hopes {
     }
 }
 
-extension Optional {
+public extension Optional {
     
-    public func hopefully(
+    func hopefully(
         _ file: StaticString = #filePath,
         _ line: UInt = #line
     ) throws -> Wrapped {
@@ -36,9 +36,9 @@ public struct hope<T> {
     public let line: UInt
 }
 
-extension hope {
+public extension hope {
     
-    public init(
+    init(
         _ value: @escaping @autoclosure () throws -> T,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
@@ -48,7 +48,7 @@ extension hope {
         self.line = line
     }
     
-    public init(
+    init(
         that value: T,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
@@ -58,7 +58,7 @@ extension hope {
         self.line = line
     }
 
-    public init<E: Error>(
+    init<E: Error>(
         _ value: @autoclosure () -> Result<T, E>,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
@@ -67,7 +67,7 @@ extension hope {
         self.init(try result.get(), file, line)
     }
 
-    public init<E: Error>(
+    init<E: Error>(
         that value: Result<T, E>,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
@@ -77,9 +77,9 @@ extension hope {
     }
 }
 
-extension hope where T == Any {
+public extension hope where T == Any {
     
-    public static func `none`<T>(
+    static func `none`<T>(
         _ value: @autoclosure () throws -> T?,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
@@ -87,7 +87,7 @@ extension hope where T == Any {
         XCTAssertNil(try value())
     }
     
-    public static func `some`<T>(
+    static func `some`<T>(
         _ value: @autoclosure () throws -> T?,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
@@ -96,13 +96,24 @@ extension hope where T == Any {
     }
 }
 
-extension hope where T == Bool {
+public extension XCTestCase {
     
-    public static func `for`(_ seconds: TimeInterval) {
+    func wait(for: TimeInterval) {
+        waitForExpectations(timeout: `for`, handler: nil)
+    }
+    
+    func wait(for: TimeInterval) async {
+        await waitForExpectations(timeout: `for`, handler: nil)
+    }
+}
+
+public extension hope where T == Bool {
+    
+    static func `for`(_ seconds: TimeInterval) {
         _ = XCTWaiter.wait(for: [XCTestExpectation()], timeout: seconds)
     }
 
-    public static func `true`(
+    static func `true`(
         _ value: @autoclosure () throws -> Bool,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
@@ -110,7 +121,7 @@ extension hope where T == Bool {
         XCTAssertTrue(try value(), file: file, line: line)
     }
     
-    public static func `false`(
+    static func `false`(
         _ value: @autoclosure () throws -> Bool,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
@@ -118,7 +129,7 @@ extension hope where T == Bool {
         XCTAssertFalse(try value(), file: file, line: line)
     }
     
-    public static func `throws`<Ignore>(
+    static func `throws`<Ignore>(
         _ value: @autoclosure () throws -> Ignore,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
@@ -126,7 +137,7 @@ extension hope where T == Bool {
         XCTAssertThrowsError(try value(), file: file, line: line)
     }
     
-    public static func less(
+    static func less(
         _ message: @autoclosure () -> String,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
@@ -134,7 +145,7 @@ extension hope where T == Bool {
         XCTFail(message(), file: file, line: line)
     }
     
-    public static func less(
+    static func less(
         _ error: @autoclosure () -> Error,
         _ file: StaticString = #filePath,
         _ line: UInt = #line
@@ -143,54 +154,54 @@ extension hope where T == Bool {
     }
 }
 
-extension hope where T: Equatable {
+public extension hope where T: Equatable {
     
     @inlinable
-    public static func == (l: hope, r: @autoclosure () throws -> T) {
+    static func == (l: hope, r: @autoclosure () throws -> T) {
         XCTAssertEqual(try l.value(), try r(), file: l.file, line: l.line)
     }
     
     @inlinable
-    public static func != (l: hope, r: @autoclosure () throws -> T) {
+    static func != (l: hope, r: @autoclosure () throws -> T) {
         XCTAssertNotEqual(try l.value(), try r(), file: l.file, line: l.line)
     }
 }
 
-extension hope where T: Comparable {
+public extension hope where T: Comparable {
     
     @inlinable
-    public static func > (l: hope, r: @autoclosure () throws -> T) {
+    static func > (l: hope, r: @autoclosure () throws -> T) {
         XCTAssertGreaterThan(try l.value(), try r(), file: l.file, line: l.line)
     }
     
     @inlinable
-    public static func < (l: hope, r: @autoclosure () throws -> T) {
+    static func < (l: hope, r: @autoclosure () throws -> T) {
         XCTAssertLessThan(try l.value(), try r(), file: l.file, line: l.line)
     }
     
     @inlinable
-    public static func >= (l: hope, r: @autoclosure () throws -> T) {
+    static func >= (l: hope, r: @autoclosure () throws -> T) {
         XCTAssertGreaterThanOrEqual(try l.value(), try r(), file: l.file, line: l.line)
     }
     
     @inlinable
-    public static func <= (l: hope, r: @autoclosure () throws -> T) {
+    static func <= (l: hope, r: @autoclosure () throws -> T) {
         XCTAssertLessThanOrEqual(try l.value(), try r(), file: l.file, line: l.line)
     }
 }
 
-extension hope where T: FloatingPoint {
+public extension hope where T: FloatingPoint {
     
     @inlinable
-    public static func ~= (l: hope<T>, r: ClosedRange<T>) {
+    static func ~= (l: hope<T>, r: ClosedRange<T>) {
         let e = (r.upperBound - r.lowerBound) / 2
         XCTAssertEqual(try l.value(), r.lowerBound + e, accuracy: e, file: l.file, line: l.line)
     }
 }
 
-extension FloatingPoint {
+public extension FloatingPoint {
     
-    @inlinable public static func ± (l: Self, r: Self) -> ClosedRange<Self> {
+    @inlinable static func ± (l: Self, r: Self) -> ClosedRange<Self> {
         (l - abs(r)) ... (l + abs(r))
     }
 }
